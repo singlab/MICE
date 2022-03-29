@@ -1,4 +1,4 @@
-package Server;
+package Runner;
 
 import java.lang.reflect.Field;
 
@@ -40,14 +40,15 @@ import abl.generated.MICEAgent;
 // locked into these realms? Do you need to resolve them first?
 // Does going into the middle bit increase story intensity?
 
-public class TCPServer {
+public class StoryRunner {
 	
-	private static TCPServer server;
+	private static StoryRunner runner;
 	
 	private static Story milieu = new Story();
 	private static Story inquiry = new Story();
 	private static Story character = new Story();
 	private static Story event = new Story();
+	private String storyState = "";
 	
 	public void startAgent() {
 		MICEAgent agent = new MICEAgent();
@@ -72,9 +73,17 @@ public class TCPServer {
         event.end = "Jackson discovers he can focus the Burning Glass's power on baking cakes. The burning glass loses some heat, and Jackson saves the mirrored realm through cake baking.";
     
     	System.out.println(milieu.start);
-    	server = new TCPServer();
-    	server.startAgent();
+    	runner = new StoryRunner();
+    	runner.startAgent();
     	
+    }
+    public static StoryRunner getInstance()
+    {	
+    	return runner;
+    }
+    public String getStoryState()
+    {
+    	return storyState;
     }
 }
 class Story {

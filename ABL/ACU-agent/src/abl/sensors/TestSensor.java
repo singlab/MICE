@@ -1,6 +1,6 @@
 package abl.sensors;
 
-import Server.TCPServer; 
+import Runner.StoryRunner;
 import abl.runtime.BehavingEntity;
 import abl.wmes.TestWME;
 /**
@@ -16,6 +16,6 @@ public class TestSensor extends SerialSensor {
 	protected void sense() {
 		BehavingEntity.getBehavingEntity().deleteAllWMEClass("TestWME");
 		BehavingEntity.getBehavingEntity().addWME(
-				new TestWME(TCPServer.getInstance().getTestWME()));
+				new TestWME(StoryRunner.getInstance().getStoryState()));
 	}
 }
