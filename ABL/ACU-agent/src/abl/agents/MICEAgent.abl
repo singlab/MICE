@@ -4,6 +4,7 @@ package abl.generated;
 import abl.wmes.*;
 import abl.actions.*;
 import abl.sensors.*;
+import java.lang.*;
 // Imports are used the same way as in Java. Its necessary to import Sensor, Action, and WME classes.
 /** 
  * A simple agent that moves towards the player and occassionally fires bullets.
@@ -21,12 +22,8 @@ behaving_entity MICEAgent {
 	 * The prototype parameters correspond to the types expected by the execute(object[]) method 
 	 * in the action's Java class.
 	 */
-	register act moveUp(int) with MoveUp;
-	register act moveDown(int) with MoveDown; 
-	register act moveLeft(int) with MoveLeft;
-	register act moveRight(int) with MoveRight;
 	register act stop(int) with Stop;
-	register act testAction(long) with TestAction;
+	register act testAction(String) with TestAction;
 
 	/**
 	 * Define the sensors that add game state to working memory. Each sensor defines the name of the WME class
@@ -43,13 +40,18 @@ behaving_entity MICEAgent {
 	int botSpeed = 2;	
 	sequential behavior MICERoot() {
 		subgoal startEventThread();
-		subgoal MICERoot();
+//		subgoal MICERoot();
 		subgoal endEventThread();
 	}
 	sequential behavior startEventThread() {
+		precondition {
+			(TestWME test::test)
+		}
 	    mental_act { 
 	    	System.out.println("STARTING EVENT.");
 	    }
+
+		act testAction(test);
 	}
 	sequential behavior endEventThread() {
 	    mental_act { 

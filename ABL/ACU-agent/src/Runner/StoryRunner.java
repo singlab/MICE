@@ -1,24 +1,7 @@
 package Runner;
 
-import java.lang.reflect.Field;
-
-
-import java.io.*;
-import java.net.*;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
-
 import abl.generated.MICEAgent;
-/**
- * This program demonstrates a simple TCP/IP socket server.
- *
- * @author www.codejava.net
- * ADD more docs if need be?
- */
+
 /**
  * Okay, so I guess today we are going to be doing something a little bit different.
  * So, how can we break down the overall story structure the way that Josh wants me to do?
@@ -48,7 +31,7 @@ public class StoryRunner {
 	private static Story inquiry = new Story();
 	private static Story character = new Story();
 	private static Story event = new Story();
-	private String storyState = "";
+	private String storyState = "event";
 	
 	public void startAgent() {
 		MICEAgent agent = new MICEAgent();
@@ -84,6 +67,11 @@ public class StoryRunner {
     public String getStoryState()
     {
     	return storyState;
+    }
+    public void SetStoryState(String state)
+    {
+    	this.storyState = state;
+    	System.out.println(this.storyState);
     }
 }
 class Story {
