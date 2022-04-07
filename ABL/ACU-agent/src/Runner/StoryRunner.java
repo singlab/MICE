@@ -74,8 +74,9 @@ public class StoryRunner {
     			}
     		}
     	}.start();
-    	
-    	 runner.SetStoryState(scan.nextLine());	
+    	while (!scan.equals("done")) {
+    		runner.SetStoryState(scan.nextLine());	
+    	}
     	
     }
     public static StoryRunner getInstance()
