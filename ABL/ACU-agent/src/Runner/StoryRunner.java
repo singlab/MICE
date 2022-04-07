@@ -1,26 +1,30 @@
 package Runner;
 
+import java.util.Scanner;
+
 import abl.generated.MICEAgent;
 
 /**
- * Okay, so I guess today we are going to be doing something a little bit different.
- * So, how can we break down the overall story structure the way that Josh wants me to do?
- * 
- * Well, we know for sure that a part of the story is going to be something about the setting.
- * However, we need to know when the setting actually becomes a Milieu story. 
- * So, that means that Milieu stories aren't actually associated with characters, but instead when
- * they get sent to some place. Like a prison or something like that?
+ * Okay, so I guess today we are going to be doing something a little bit 
+ * different.
+ * So, how can we break down the overall story structure the way that Josh 
+ * wants me to do? Well, we know for sure that a part of the story is going 
+ * to be something about the setting. However, we need to know when the setting 
+ * actually becomes a Milieu story. So, that means that Milieu stories 
+ * aren't actually associated with characters, but instead when they get sent 
+ * to some place. Like a prison or something like that?
  * 
  * So think about how loZ does this with the use of the Dark World, right?
  */
 // We want to have a story guided by MICE. 
 // Let's first start by opening up a character story!
 // We need story data first.
-// We have a beginning, middle, and end. So let's use these to be the driving action in terms of 
-// making new MICE connections. Don't forget that you can do a fractal story telling thing. Where 
-// each start can be interlaced properly. You just have to close out the stories correctly. 
-// Locations matter. Notice how you have the cake realm and the ovenless realm. Are stories
-// locked into these realms? Do you need to resolve them first?
+// We have a beginning, middle, and end. So let's use these to be the driving 
+// action in terms of making new MICE connections. Don't forget that you can 
+// do a fractal story telling thing. Where each start can be interlaced 
+// properly. You just have to close out the stories correctly. Locations 
+// matter. Notice how you have the cake realm and the ovenless realm. Are 
+// stories locked into these realms? Do you need to resolve them first?
 // Does going into the middle bit increase story intensity?
 
 public class StoryRunner {
@@ -56,8 +60,22 @@ public class StoryRunner {
         event.end = "Jackson discovers he can focus the Burning Glass's power on baking cakes. The burning glass loses some heat, and Jackson saves the mirrored realm through cake baking.";
     
     	System.out.println(milieu.start);
+    	Scanner scan = new Scanner(System.in);
+    	
     	runner = new StoryRunner();
-    	runner.startAgent();
+    	new Thread() {
+    		public void run() {
+    			while (true) {
+    				try {
+    					runner.startAgent();
+    					Thread.sleep(50);
+    				}
+    				catch (Exception e) {}
+    			}
+    		}
+    	}.start();
+    	
+    	 runner.SetStoryState(scan.nextLine());	
     	
     }
     public static StoryRunner getInstance()

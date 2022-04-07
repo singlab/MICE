@@ -16,6 +16,5 @@ public class TestAction extends BaseAction {
 	 */
 	public void execute(Object[] args) {
 		System.out.printf("%s. This is a test action.\n", args[0]);
-		StoryRunner.getInstance().SetStoryState("mileu");
 	}
 }
