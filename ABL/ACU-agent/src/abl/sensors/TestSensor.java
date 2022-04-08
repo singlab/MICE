@@ -15,8 +15,6 @@ public class TestSensor extends SerialSensor {
 	 */
 	protected void sense() {
 		BehavingEntity.getBehavingEntity().deleteAllWMEClass("TestWME");
-		System.out.println(StoryRunner.getInstance().getStoryState() +
-				" this is in the sensor");
 		BehavingEntity.getBehavingEntity().addWME(
 				new TestWME(StoryRunner.getInstance().getStoryState()));
 	}

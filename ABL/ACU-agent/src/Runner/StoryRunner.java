@@ -77,6 +77,7 @@ public class StoryRunner {
     	while (!scan.equals("done")) {
     		runner.SetStoryState(scan.nextLine());	
     	}
+    	// Next: Get it so we can have nested MICE threads.
     	
     }
     public static StoryRunner getInstance()

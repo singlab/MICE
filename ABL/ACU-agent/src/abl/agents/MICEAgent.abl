@@ -36,39 +36,69 @@ behaving_entity MICEAgent {
 	 *
 	 * It is also possible to use constants from a Java interface (e.g.):
      * constants game.Constants;   
-	 */ 
-	int botSpeed = 2;	
-	sequential behavior MICERoot() {
+	 */ 	
+    
+    sequential behavior MICERoot() {
+		subgoal MICENode();
+	}
+    
+    sequential behavior MICENode() {
+		precondition {
+			(TestWME test=="milieu")
+		}
+		subgoal startThread();
+		subgoal MICENode();
+		subgoal endThread();
+	}
+    
+	sequential behavior startThread() {
+		precondition { (TestWME test::test) }
+	    mental_act { 
+	    	System.out.println("STARTING MILIEU.");
+	    }
+		act testAction(test);
+	}
+	sequential behavior endThread() {
+	    mental_act { 
+	    	System.out.println("ENDING MILIEU.");
+	    }
+	}
+    
+    
+    
+	sequential behavior MICENode() {
 		precondition {
 			(TestWME test=="milieu")
 		}
 		subgoal startMilieuThread();
-		subgoal MICERoot();
+		subgoal MICENode();
 		subgoal endMilieuThread();
 	}
-	sequential behavior MICERoot() {
+	sequential behavior MICENode() {
 		precondition {
 			(TestWME test=="inquiry")
 		}
 		subgoal startInquiryThread();
-		subgoal MICERoot();
+		subgoal MICENode();
 		subgoal endInquiryThread();
 	}
-	sequential behavior MICERoot() {
+	sequential behavior MICENode() {
 		precondition {
 			(TestWME test=="character")
 		}
 		subgoal startCharacterThread();
-		subgoal MICERoot();
+		subgoal MICENode();
 		subgoal endCharacterThread();
 	}
-	sequential behavior MICERoot() {
+	sequential behavior MICENode() {
 		precondition {
 			(TestWME test=="event")
 		}
-		subgoal startEventThread();
-		subgoal MICERoot();
-		subgoal endEventThread();
+		sequential {
+			subgoal startEventThread();
+			subgoal MICENode();
+			subgoal endEventThread();			
+		}
 	}
 	sequential behavior startMilieuThread() {
 		precondition { (TestWME test::test) }
@@ -110,16 +140,17 @@ behaving_entity MICEAgent {
 	}
 	
 	sequential behavior startEventThread() {
-		precondition { (TestWME test::test) }
 	    mental_act { 
 	    	System.out.println("STARTING EVENT.");
 	    }
-		act testAction(test);
+		act testAction("We are finally here");
 	}
 	sequential behavior endEventThread() {
+		precondition { (TestWME test::test) }
 	    mental_act { 
 	    	System.out.println("ENDING EVENT.");
 	    }
+	    act testAction(test);
 	}
 
     /**
