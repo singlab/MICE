@@ -39,28 +39,31 @@ behaving_entity MICEAgent {
 	 */ 	
     
     sequential behavior MICERoot() {
-		subgoal MICENode();
+		with (persistent) subgoal MICENode();
 	}
-    
+    // Ideally this is a generic mice node that works with 
+    // any of the four mice elements.
+    //TODO: Add in enum support for the MICE elements, since that makes the
+    // most sense
     sequential behavior MICENode() {
 		precondition {
-			(TestWME test=="milieu")
+			(TestWME test=="")
 		}
 		subgoal startThread();
-		subgoal MICENode();
+		with (ignore_failue) subgoal MICENode();
 		subgoal endThread();
 	}
-    
+    // TODO: Bind the type, then pass it through the substeps.
 	sequential behavior startThread() {
 		precondition { (TestWME test::test) }
 	    mental_act { 
-	    	System.out.println("STARTING MILIEU.");
+	    	System.out.println("STARTING THREAD.");
 	    }
 		act testAction(test);
 	}
 	sequential behavior endThread() {
 	    mental_act { 
-	    	System.out.println("ENDING MILIEU.");
+	    	System.out.println("ENDING THREAD.");
 	    }
 	}
     
@@ -96,10 +99,11 @@ behaving_entity MICEAgent {
 		}
 		sequential {
 			subgoal startEventThread();
-			subgoal MICENode();
+			with (ignore_failure) subgoal MICENode();
 			subgoal endEventThread();			
 		}
 	}
+	
 	sequential behavior startMilieuThread() {
 		precondition { (TestWME test::test) }
 	    mental_act { 

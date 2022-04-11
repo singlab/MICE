@@ -27,6 +27,15 @@ import abl.generated.MICEAgent;
 // stories locked into these realms? Do you need to resolve them first?
 // Does going into the middle bit increase story intensity?
 
+
+/**
+ * This is for the issue with MICE endthread failing.
+ * Maybe you could use the daemon function, or
+ * presistence things act like other. 7.2, or
+ * Ignore failure.  
+ *
+ */
+
 public class StoryRunner {
 	
 	private static StoryRunner runner;
