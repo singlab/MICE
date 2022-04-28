@@ -44,6 +44,7 @@ public class StoryRunner {
 	private static Story inquiry = new Story();
 	private static Story character = new Story();
 	private static Story event = new Story();
+	private String storyProgress = "";
 	private String storyState = "event";
 	
 	public void startAgent() {
@@ -68,7 +69,7 @@ public class StoryRunner {
         event.middle = "Shocked, Jackson tries and runs away but notices how it cooks his cake batter.";
         event.end = "Jackson discovers he can focus the Burning Glass's power on baking cakes. The burning glass loses some heat, and Jackson saves the mirrored realm through cake baking.";
     
-    	System.out.println(milieu.start);
+    	
     	Scanner scan = new Scanner(System.in);
     	
     	runner = new StoryRunner();
@@ -84,8 +85,9 @@ public class StoryRunner {
     		}
     	}.start();
     	while (!scan.equals("done")) {
-    		runner.SetStoryState(scan.nextLine());	
+    		runner.setStoryState(scan.nextLine());	
     	}
+    	scan.close();
     	// Next: Get it so we can have nested MICE threads.
     	
     }
@@ -97,10 +99,14 @@ public class StoryRunner {
     {
     	return storyState;
     }
-    public void SetStoryState(String state)
+    public void setStoryState(String state)
     {
     	this.storyState = state;
     	System.out.println(this.storyState);
+    }
+    public void setStoryProgress(String state) 
+    {
+    	this.storyProgress = state;
     }
 }
 class Story {

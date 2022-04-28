@@ -15,6 +15,7 @@ public class TestAction extends BaseAction {
 	 * args[0] - bot id
 	 */
 	public void execute(Object[] args) {
+		StoryRunner.getInstance().setStoryProgress(args[0]);
 		System.out.printf("%s. This is a test action.\n", args[0]);
 	}
 }
