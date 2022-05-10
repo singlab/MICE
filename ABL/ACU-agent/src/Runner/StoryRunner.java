@@ -1,8 +1,8 @@
 package Runner;
 
 import java.util.Scanner;
-
-import abl.generated.MICEAgent;
+import abl.generated.AuthorAgent;
+import abl.wmes.*;
 
 /**
  * Okay, so I guess today we are going to be doing something a little bit 
@@ -29,9 +29,9 @@ import abl.generated.MICEAgent;
 
 
 /**
- * This is for the issue with MICE endthread failing.
+ * This is for the issue with MICE end thread failing.
  * Maybe you could use the daemon function, or
- * presistence things act like other. 7.2, or
+ * persistence things act like other. 7.2, or
  * Ignore failure.  
  *
  */
@@ -39,36 +39,17 @@ import abl.generated.MICEAgent;
 public class StoryRunner {
 	
 	private static StoryRunner runner;
-	
-	private static Story milieu = new Story();
-	private static Story inquiry = new Story();
-	private static Story character = new Story();
-	private static Story event = new Story();
-	private String storyProgress = "";
-	private String storyState = "event";
+	private static Location location = new Location();
+
+	private static AuthorAgent agent = new AuthorAgent();
+	private String playerChoice = "event";
 	
 	public void startAgent() {
-		MICEAgent agent = new MICEAgent();
 		agent.startBehaving();
 	}
 	
     public static void main(String[] args) {
-    	milieu.start = "Jackson, one day, finds himself within the wizard's court. He eats a well-made cake, watching the apprentice wizards perform their magics. One of the stray magicked spells hits Jackson, and the spell teleports him to a mirror world with no ovens.";
-        milieu.middle = "Aghast, Jackson searches far and wide, trying to escape from such a mad world. ";
-        milieu.end = "Yet, he can't find an oven anywhere. So, Jackson, refusing to give up, tries to make his own oven. But he fails and accepts his new, ovenless existence.";
-        
-        inquiry.start = "Still in the mirrored realm, Jackson discovers someone took a piece of his cake.";
-        inquiry.middle = "Confused, Jackson asks the guards if they know who ate his cake.";
-        inquiry.end = "Telling him, the guards explain how the king's son took a bite. Glad to know, Jackson bakes a cake for the king's son using the power of the burning glass. And thus, Jackson, still in a realm of mirrors, finally can have his cake and eat it, too.";
-    	
-    	character.start = "Jackson works within a generic kingdom bakery as a baker of high renown. However, the king gates cakes, which breaks Jackson's heart. As a cake lover and a baker, Jackson wants to convince the world to love cakes. ";
-        character.middle = "So, the fool of a mad man goes to the king with a cake of extraordinary make. The king hates it.";
-        character.end = "Jackson weeps for this failure. Yet, in his tear-filled hysteria, Jackson learns to accept that others might not like cake, but that doesn't mean he has to stop baking cakes.";
-        
-        event.start = "One day, a glass falls upon the mirrored realm. It has an inner heat that burns up cities and towns.";
-        event.middle = "Shocked, Jackson tries and runs away but notices how it cooks his cake batter.";
-        event.end = "Jackson discovers he can focus the Burning Glass's power on baking cakes. The burning glass loses some heat, and Jackson saves the mirrored realm through cake baking.";
-    
+    	location.location = "Starting town.";
     	
     	Scanner scan = new Scanner(System.in);
     	
@@ -84,35 +65,45 @@ public class StoryRunner {
     			}
     		}
     	}.start();
+    	
     	while (!scan.equals("done")) {
-    		runner.setStoryState(scan.nextLine());	
+    		// Get player choice.
+    		runner.setChoice(scan.nextLine());	
+    		ChoiceWME storyWME = new ChoiceWME(runner.getStoryState());
+
+    		runner.getAgent().deleteAllWMEClass("ChoiceWME");   	
+    		runner.getAgent().addWME(storyWME);
     	}
     	scan.close();
-    	// Next: Get it so we can have nested MICE threads.
     	
     }
-    public static StoryRunner getInstance()
-    {	
+    public static StoryRunner getInstance() {	
     	return runner;
     }
-    public String getStoryState()
-    {
-    	return storyState;
+    public String getStoryState() {
+    	return playerChoice;
     }
-    public void setStoryState(String state)
-    {
-    	this.storyState = state;
-    	System.out.println(this.storyState);
+    public void setChoice(String state) {
+    	this.playerChoice = state;
+    	System.out.println(this.playerChoice);
     }
-    public void setStoryProgress(String state) 
-    {
-    	this.storyProgress = state;
+    public AuthorAgent getAgent() {
+    	return agent;
+    }
+    public Location getLocation() {
+    	return location;
     }
 }
-class Story {
+
+class Location {
+	public String location;
+}
+class Story 
+{
 	public String start;
 	public String middle;
 	public String end;
+	public String[] resolutions;
 	public String type;
 	public String location;
 }

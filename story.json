@@ -1,0 +1,12 @@
+{
+    "Storynodes": {
+        "nodes" : [
+            {
+                "text" : "this is a story node text.",
+                "conditions" : [
+                    {"choice" : "happy"}
+                ]
+            }
+        ]
+    }
+}
