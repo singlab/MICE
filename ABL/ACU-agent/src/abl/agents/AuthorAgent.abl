@@ -30,7 +30,9 @@ behaving_entity AuthorAgent {
 	 * that it is responsible for managing and the Java sensor class that implements the functionality. 
 	 */
     register wme TestWME with TestSensor;
-    register wme ChoiceWME with StoryStateSensor;
+    register wme ChoiceWME with ChoiceSensor;
+    register wme LocationWME with LocationSensor;
+
 
 	/**
 	 * Defines a variable scope to the agent, which can be used and modified in behaviors. 
@@ -43,18 +45,27 @@ behaving_entity AuthorAgent {
     	with (persistent) subgoal MICENode();
 	}
     sequential behavior MICENode() {
+    	subgoal PromptUser();
     	subgoal startThread();
     	subgoal middleThread();
     	subgoal endThread();
     }
+    sequential behavior PromptUser() {
+    	precondition {
+//    		(StoryNodeWME)
+    		(ChoiceWME)
+    		(LocationWME)
+    	}
+    	succeed_step;
+    }
     // TODO: Bind the type, then pass it through the substeps.
 	sequential behavior startThread() {
-		precondition { (ChoiceWME storyState == "start event") }
+		precondition { (ChoiceWME name == "start event") }
 	    mental_act { 
 	    	System.out.println("STARTING EVENT.");
 	    }
 	    with ( success_test { 
-	    	(ChoiceWME storyState == "middle event")
+	    	(ChoiceWME name == "middle event")
 	    }) wait;
 	    
 		act testAction("Start");
@@ -67,14 +78,12 @@ behaving_entity AuthorAgent {
 	    }
 	    act testAction("Middle");
 	    with ( success_test { 
-	    	(ChoiceWME storyState == "end event")
+	    	(ChoiceWME name == "end event")
 	    }) wait; 
 	    subgoal endThread();
 	}
 	
 	sequential behavior endThread() {
-//		precondition {
-//		}
 		mental_act { 
 	    	System.out.println("ENDING EVENT.");
 	    }

@@ -11,18 +11,18 @@ import wm.WME;
  * 
  * @author Ben Weber 3-7-11
  */
-public class LocationWME extends WME {
+public class StoryNodeWME extends WME {
 
 	/** Location of the player */
-	private String location;
+	private String name;
 	
 	/**
 	 * Instantiates a working memory element for tracking the player character.
 	 */
-	public LocationWME(String locationName) {
-		this.location = locationName;
+	public StoryNodeWME(String name) {
+		this.name = name;
 	}
 	public String getName() {
-		return this.location;
+		return this.name;
 	}
 }

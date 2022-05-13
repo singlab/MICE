@@ -14,15 +14,15 @@ import wm.WME;
 public class ChoiceWME extends WME {
 
 	/** Location of the player */
-	private String storyState;
+	private String choice;
 	
 	/**
 	 * Instantiates a working memory element for tracking the player character.
 	 */
-	public ChoiceWME(String storyState) {
-		this.storyState = storyState;
+	public ChoiceWME(String choice) {
+		this.choice = choice;
 	}
-	public String getStoryState() {
-		return this.storyState;
+	public String getName() {
+		return this.choice;
 	}
 }

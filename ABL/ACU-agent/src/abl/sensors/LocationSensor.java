@@ -15,16 +15,14 @@ public class LocationSensor extends SerialSensor {
 	 */
 	protected void sense() {
 		LocationWME locationWME = new LocationWME(StoryRunner.getInstance()
-				.getLocation());
-		// Gotta figure out how to throttle this sensor... Or make a new wme..
+				.getLocationName());
 		
 //		StoryStateWME storyWME = new StoryStateWME(StoryRunner.getInstance()
 //				.getStoryState());
 //		
-//		BehavingEntity.getBehavingEntity().deleteAllWMEClass("StoryStateWME");
-//		
-//		BehavingEntity.getBehavingEntity().addWME(storyWME);
-//		System.out.println("Added new story WME");
+		BehavingEntity.getBehavingEntity().deleteAllWMEClass("LocationWME");
+		
+		BehavingEntity.getBehavingEntity().addWME(locationWME);
 	}
 }
 	
