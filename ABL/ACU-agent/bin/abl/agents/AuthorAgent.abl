@@ -1,0 +1,121 @@
+package abl.generated;
+// the package corresponds to where generated Java files are placed.
+
+import abl.wmes.*;
+import abl.actions.*;
+import abl.sensors.*;
+import java.lang.*;
+// Imports are used the same way as in Java. Its necessary to import Sensor, Action, and WME classes.
+/** 
+ * A simple agent that moves towards the player and occassionally fires bullets.
+ *
+ * @author Josh McCoy 1-23-2019
+ * @author Ben Weber 3-7-11
+ */ 
+behaving_entity AuthorAgent {
+// This defines a name for the agent 
+
+	/** 
+	 * Define the physicals actions that the agent can perform. The definition includes an action prototype and
+	 * and an action class name. The class name must be a Java class which has been imported. 
+	 *
+	 * The prototype parameters correspond to the types expected by the execute(object[]) method 
+	 * in the action's Java class.
+	 */
+	register act stop(int) with Stop;
+	register act testAction(String) with TestAction;
+
+	/**
+	 * Define the sensors that add game state to working memory. Each sensor defines the name of the WME class
+	 * that it is responsible for managing and the Java sensor class that implements the functionality. 
+	 */
+    register wme TestWME with TestSensor;
+    register wme ChoiceWME with ChoiceSensor;
+    register wme LocationWME with LocationSensor;
+
+
+	/**
+	 * Defines a variable scope to the agent, which can be used and modified in behaviors. 
+	 *
+	 * It is also possible to use constants from a Java interface (e.g.):
+     * constants game.Constants;   
+	 */ 	
+    
+    sequential behavior MICERoot() {
+    	with (persistent) subgoal MICENode();
+	}
+    sequential behavior MICENode() {
+    	subgoal PromptUser();
+    	subgoal startThread();
+    	subgoal middleThread();
+    	subgoal endThread();
+    }
+    sequential behavior PromptUser() {
+    	precondition {
+//    		(StoryNodeWME)
+    		(ChoiceWME)
+    		(LocationWME)
+    	}
+    	succeed_step;
+    }
+    // TODO: Bind the type, then pass it through the substeps.
+	sequential behavior startThread() {
+		precondition { (ChoiceWME name == "start event") }
+	    mental_act { 
+	    	System.out.println("STARTING EVENT.");
+	    }
+	    with ( success_test { 
+	    	(ChoiceWME name == "middle event")
+	    }) wait;
+	    
+		act testAction("Start");
+		subgoal middleThread();
+	}
+	
+	sequential behavior middleThread() {
+	    mental_act { 
+	    	System.out.println("MIDDLE EVENT.");
+	    }
+	    act testAction("Middle");
+	    with ( success_test { 
+	    	(ChoiceWME name == "end event")
+	    }) wait; 
+	    subgoal endThread();
+	}
+	
+	sequential behavior endThread() {
+		mental_act { 
+	    	System.out.println("ENDING EVENT.");
+	    }
+	    act testAction("End");
+	}
+
+    /**
+     * Utility behavior for suspending the execution of a behavior.
+     *
+     * This behavior consist of two steps. First, the mental act compute the finishing time
+     * based on the input delay. Second, the success tests waits until the condition check
+     * evaluates to true.
+     */
+	sequential behavior Wait(int milliseconds) {
+		long finish;
+	    mental_act { 
+	    	finish = System.currentTimeMillis() + milliseconds; 
+	    }
+	    
+	    with ( success_test { (System.currentTimeMillis() > finish) } ) wait;
+	}
+    /** 
+     * Root of the active behavior tree.
+     *
+     * Note: this is a parallel behavior.
+     * Note: the ABL compiler expects this to be the last behavior defined in the agent. 
+     * Note: prioirities are used to ensure all goals are pursued, since the move() goal can thrash in this simple example
+     */
+    initial_tree {
+    	with (priority 3) mental_act {
+			System.out.println("Starting bot Agent");
+    	}
+    	with (persistent) subgoal MICERoot();
+    }
+}

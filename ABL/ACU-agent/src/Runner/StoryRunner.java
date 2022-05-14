@@ -1,9 +1,12 @@
 package Runner;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Scanner;
 import abl.generated.AuthorAgent;
-import abl.wmes.*;
-import org.json.*;
+import abl.wmes.*; //TODO: Maybe remove this. Seeing as how you don't use it.
+import com.google.gson.*;
 
 /**
  * This is for the issue with MICE end thread failing.
@@ -22,8 +25,26 @@ public class StoryRunner {
 	private AuthorAgent agent;
 	private String playerChoice = "event";
 	
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
     	//TODO: Actually get json from file into this file.
+    	Gson gson = new Gson();
+    	System.out.println("this is executing.");
+    	FileReader output;
+    	try {
+    		Object object = gson.fromJson(new FileReader("../../story.json"), 
+    				Object.class);
+    		System.out.println(object);
+    	} catch (FileNotFoundException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    		System.out.println("Got caught");
+    	}
+
+
+
+        
+        
+        
     	Scanner scan = new Scanner(System.in);
     	
     	runner = new StoryRunner();
