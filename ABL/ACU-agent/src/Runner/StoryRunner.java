@@ -12,6 +12,8 @@ import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import abl.generated.AuthorAgent;
 import abl.wmes.*; //TODO: Maybe remove this. Seeing as how you don't use it.
@@ -28,106 +30,62 @@ import com.google.gson.*;
 public class StoryRunner {
 	
 	private static StoryRunner runner;
+	private Server server;
 	private Location starting_village = new Location("starting_village");
 	private Location outskirts = new Location("outskirts");
 	private Location player_location = starting_village;
-	private AuthorAgent agent;
+	private AuthorAgent agent = new AuthorAgent();
 	private String playerChoice = "event";
 	
     public static void main(String[] args) throws IOException {
     	//TODO: Actually get json from file into this file.
     	//TODO: send data over to a javascript server.
+    	//TODO: We need to figure out how to open up ABL and add in our own
+    	// 		callbacks.
     	Gson gson = new Gson();
+    	
+    	Map<String, StoryNode> nodes = new HashMap<String, StoryNode>();
+
     	try {
-    		Object object = gson.fromJson(new FileReader("../../story.json"), 
-    				Object.class);
-    		System.out.println(object);
+    		nodes = gson.fromJson(new FileReader("../../story.json"), 
+    				Map.class);
+    		
+    		System.out.println(nodes.get("node1"));
     	} catch (FileNotFoundException e) {
     		// TODO Auto-generated catch block
     		e.printStackTrace();
     		System.out.println("Got caught");
     	}
 	
-        //TODO: Using strings here... We should just send out the json
-
-        
     	Scanner scan = new Scanner(System.in);
     	
     	runner = new StoryRunner();
-    	//Starts server on another thread.
-    	new Thread(() -> runner.startServer(gson)).start();
-    	//Starting agent.
-//    	runner.setAgent(new AuthorAgent());
-//    	new Thread(() -> runner.getAgent().startBehaving()).start();
-    	// Create a new agent. 
-//    	runner.StartAgent();
+    	runner.server = new Server();
+    	new Thread(() -> runner.server.startServer(runner, gson, 5000)).start();
+    	//TODO: REMOVE THIS And figure out how to fire message when something
+    	// 		happens.
+//    	while (runner.server.getClientSocket() == null) {}
+//    	runner.server.sendOutgoingMessage(gson.toJson(nodes));
     	
-    	// Prompt the player (AuthorAgent.
-    	// Get choice (User input)
-    	// React to choice, giving next story beat. (AuthorAgent.)
     	
-    	while (!scan.equals("done")) {
-    		// Get player choice and send it to the agent.
-    		System.out.println(PrintPlayerOptions());
-    		String playerChoice = scan.nextLine();
-    		// Parse player choice.
-    		if (playerChoice.contains("go")) {
-    			//update location 
-    		} else {
-    			// Figure out what is going on.
-    		}
-    		runner.setChoice(playerChoice);	
-
-    		// output agent response.
-    	}
+    	new Thread(() -> runner.getAgent().startBehaving()).start();
+//    	while (!scan.equals("done")) {
+//    		// Get player choice and send it to the agent.
+//    		System.out.println(PrintPlayerOptions());
+//    		String playerChoice = scan.nextLine();
+//    		// Parse player choice.
+//    		if (playerChoice.contains("go")) {
+//    			//update location 
+//    		} else {
+//    			// Figure out what is going on.
+//    		}
+//    		runner.setChoice(playerChoice);	
+//
+//    		// output agent response.
+//    	}
     	scan.close();
     	
     }
-    public void sendOutgoingMessage(String jo, Socket socket) {
-    	System.out.println("Sending outgoing message...");
-    	OutputStream output = null;
-		try {
-			output = socket.getOutputStream();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.out.println("Error sending message: output stream");
-		}
-        PrintWriter writer = new PrintWriter(output, true);
-        writer.println(jo);
-    }
-    
-    public void startServer(Gson gson) {
-    	int port = 5000;
-		try (ServerSocket serverSocket = new ServerSocket(port)) {
-			System.out.println("Server is listening on port " + port);
-			
-			Socket clientSocket;
-			clientSocket = serverSocket.accept();
-			InputStream in = clientSocket.getInputStream();
-			System.out.println("New client connected");
-			new Thread(() -> runner.sendOutgoingMessage("Hello", clientSocket)).start();
-			byte[] buffer = new byte[1024];
-			int read;
-			String output = "";
-			while ((read = in.read(buffer)) != -1) {
-				//TODO: This isn't firing... And I'm not sure why
-				System.out.println("Receiving message...");
-				String dataString = new String(buffer, 0, read);
-				output += dataString;
-				System.out.println(dataString);
-				System.out.flush();
-				Object test = gson.toJson(output, Object.class);
-				System.out.println(test);
-			}
-		} catch (IOException ex) {
-			System.out.println("Server exception: " + ex.getMessage());
-			ex.printStackTrace();
-		}
-    		
-    }
-    
-    
     //TODO figure out how to input story nodes...
     public static String PrintPlayerOptions() {
     	String options = "";
@@ -165,6 +123,34 @@ class Location {
 		return location;
 	}
 }
+
+class StoryNodes {
+	public Map<String, StoryNode> nodes = new HashMap<String, StoryNode>();
+
+}
+class StoryNode {
+	public String text;
+	public String[] next;
+}
+class hey {
+	public String hey;
+	public String toString() {
+		return hey;
+	}
+}
+
+class test {
+	public String name;
+	public hey object;
+	public String toString() {
+		String string = "";
+//		for (int i = 0; i < name.length; i++) {
+//			string += name[i];
+//		}
+		return object.toString();
+	}
+}
+
 class Story 
 {
 	public String start;
