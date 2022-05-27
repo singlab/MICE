@@ -1,4 +1,3 @@
---How did we progress in Those Who Steal The Stars?
     StoryProgres == Narrative position + Spatial location
         Where you are in the story and where you are in the world.
 Story = Arc

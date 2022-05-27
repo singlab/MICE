@@ -38,8 +38,6 @@ public class StoryRunner {
 	private String playerChoice = "event";
 	
     public static void main(String[] args) throws IOException {
-    	//TODO: Actually get json from file into this file.
-    	//TODO: send data over to a javascript server.
     	//TODO: We need to figure out how to open up ABL and add in our own
     	// 		callbacks.
     	Gson gson = new Gson();
@@ -50,39 +48,23 @@ public class StoryRunner {
     		nodes = gson.fromJson(new FileReader("../../story.json"), 
     				Map.class);
     		
+    		System.out.println(nodes);
     		System.out.println(nodes.get("node1"));
     	} catch (FileNotFoundException e) {
-    		// TODO Auto-generated catch block
     		e.printStackTrace();
-    		System.out.println("Got caught");
+    		System.out.println("Got caught when trying to convert json to java");
     	}
 	
     	Scanner scan = new Scanner(System.in);
     	
     	runner = new StoryRunner();
+    	// The server handles any kind of Unity and Javascript calls.g
+    	//TODO: Get Unity and Java talking to each other, so you can have 
+    	// event listeners on the player choice function.
     	runner.server = new Server();
     	new Thread(() -> runner.server.startServer(runner, gson, 5000)).start();
-    	//TODO: REMOVE THIS And figure out how to fire message when something
-    	// 		happens.
-//    	while (runner.server.getClientSocket() == null) {}
-//    	runner.server.sendOutgoingMessage(gson.toJson(nodes));
-    	
-    	
-    	new Thread(() -> runner.getAgent().startBehaving()).start();
-//    	while (!scan.equals("done")) {
-//    		// Get player choice and send it to the agent.
-//    		System.out.println(PrintPlayerOptions());
-//    		String playerChoice = scan.nextLine();
-//    		// Parse player choice.
-//    		if (playerChoice.contains("go")) {
-//    			//update location 
-//    		} else {
-//    			// Figure out what is going on.
-//    		}
-//    		runner.setChoice(playerChoice);	
-//
-//    		// output agent response.
-//    	}
+    	//TODO: Create an event listener that fires sendOutgoingMessage whenever
+    	// 		something specific happens.
     	scan.close();
     	
     }

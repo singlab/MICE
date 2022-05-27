@@ -48,7 +48,7 @@ let json = {
 client.connect(port, host, function() {
     console.log("connected");
     // client.write('s');
-    // client.write(`Hello from Client ${client.address().address}`.toString());
+    client.write(`Hello from Client ${client.address().address}`.toString());
 });
 
 client.on('data', function(data) {

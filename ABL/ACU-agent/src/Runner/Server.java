@@ -28,8 +28,8 @@ public class Server {
 			while ((read = in.read(buffer)) != -1) {
 				//TODO: This isn't firing... And I'm not sure why
 				System.out.println("Receiving message...");
-				
 			}
+			System.out.println(read);
 		} catch (IOException ex) {
 			System.out.println("Server exception: " + ex.getMessage());
 			ex.printStackTrace();
