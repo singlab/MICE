@@ -16,17 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 import abl.generated.AuthorAgent;
-import abl.wmes.*; //TODO: Maybe remove this. Seeing as how you don't use it.
 import com.google.gson.*;
 
-/**
- * This is for the issue with MICE end thread failing.
- * Maybe you could use the daemon function, or
- * persistence things act like other. 7.2, or
- * Ignore failure.  
- *
- */
-
+//TODO: Figure out some kind of datastructure for the WME tags.B
 public class StoryRunner {
 	
 	private static StoryRunner runner;
@@ -34,14 +26,15 @@ public class StoryRunner {
 	private Location starting_village = new Location("starting_village");
 	private Location outskirts = new Location("outskirts");
 	private Location player_location = starting_village;
-	private AuthorAgent agent = new AuthorAgent();
+	private AuthorAgent agent;
 	private String playerChoice = "event";
 	
     public static void main(String[] args) throws IOException {
+    	
     	//TODO: We need to figure out how to open up ABL and add in our own
     	// 		callbacks.
     	Gson gson = new Gson();
-    	
+
     	Map<String, StoryNode> nodes = new HashMap<String, StoryNode>();
 
     	try {
@@ -63,6 +56,10 @@ public class StoryRunner {
     	// event listeners on the player choice function.
     	runner.server = new Server();
     	new Thread(() -> runner.server.startServer(runner, gson, 5000)).start();
+    	
+    	runner.setAgent(new AuthorAgent());
+    	new Thread(() -> runner.getAgent().startBehaving()).start();
+    			
     	//TODO: Create an event listener that fires sendOutgoingMessage whenever
     	// 		something specific happens.
     	scan.close();
@@ -113,24 +110,6 @@ class StoryNodes {
 class StoryNode {
 	public String text;
 	public String[] next;
-}
-class hey {
-	public String hey;
-	public String toString() {
-		return hey;
-	}
-}
-
-class test {
-	public String name;
-	public hey object;
-	public String toString() {
-		String string = "";
-//		for (int i = 0; i < name.length; i++) {
-//			string += name[i];
-//		}
-		return object.toString();
-	}
 }
 
 class Story 

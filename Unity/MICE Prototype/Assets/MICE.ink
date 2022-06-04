@@ -1,7 +1,13 @@
+Welcome
+    *** choice 
+    *** choice 1
+
 Milieu #Dream
     MC finds themselves stuck in a dream
     They choose to try and escape it [choice]
     They free themselves from the dream.
+    
+
 
 Inquiry #Waking_world
 

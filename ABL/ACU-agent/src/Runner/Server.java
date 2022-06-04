@@ -1,41 +1,50 @@
 package Runner;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 import com.google.gson.Gson;
+import abl.wmes.*;
 
 public class Server {
 	Socket clientSocket;
 	
 	public void startServer(StoryRunner runner, Gson gson, int port) {
 		System.out.println(port);
-		System.out.println("hello");
 		try (ServerSocket serverSocket = new ServerSocket(port)) {
 			System.out.println("Server is listening on port " + port);
 			
 			this.clientSocket = serverSocket.accept();
-			InputStream in = this.clientSocket.getInputStream();
+			InputStream input = this.clientSocket.getInputStream();
 			System.out.println("New client connected");
 
+			BufferedReader in = new BufferedReader(new InputStreamReader(input));
+			
 			byte[] buffer = new byte[1024];
-			int read;
+			int read = -1;
 			String output = "";
-			while ((read = in.read(buffer)) != -1) {
-				//TODO: This isn't firing... And I'm not sure why
-				System.out.println("Receiving message...");
+//			while ((read = in.read(buffer)) != -1) {
+			while ((output = in.readLine()) != null) {
+				System.out.println(output);
+				// you have the agent through the runner, and the wme that way
+				// or update some kind of state that way, I don't know.
+				SendToABL(runner, output);
 			}
-			System.out.println(read);
+			System.out.println("Something was read.");
 		} catch (IOException ex) {
 			System.out.println("Server exception: " + ex.getMessage());
 			ex.printStackTrace();
 		}
     		
     }
+	
+	private void SendToABL(StoryRunner runner, String msg) {
+		TagWME wme = new TagWME(msg);
+		System.out.println(wme);
+		runner.getAgent().addWME(wme);
+	}
     public void sendOutgoingMessage(String msg) {
     	System.out.println("Sending outgoing message...");
     	OutputStream output = null;

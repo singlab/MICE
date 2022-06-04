@@ -29,9 +29,10 @@ behaving_entity AuthorAgent {
 	 * Define the sensors that add game state to working memory. Each sensor defines the name of the WME class
 	 * that it is responsible for managing and the Java sensor class that implements the functionality. 
 	 */
-    register wme TestWME with TestSensor;
+    register wme TagWME with TestSensor;
     register wme ChoiceWME with ChoiceSensor;
     register wme LocationWME with LocationSensor;
+    
 
 
 	/**
@@ -60,7 +61,10 @@ behaving_entity AuthorAgent {
     }
     // TODO: Bind the type, then pass it through the substeps.
 	sequential behavior startThread() {
-		precondition { (ChoiceWME name == "start event") }
+		precondition { 
+			(TagWME)
+			(ChoiceWME name == "start event") 
+		}
 	    mental_act { 
 	    	System.out.println("STARTING EVENT.");
 	    }
