@@ -15,14 +15,20 @@ public class TagWME extends WME {
 
 	/** Location of the player */
 	private String tag;
-	
+	private Boolean bound = false;
 	/**
 	 * Instantiates a working memory element for tracking the player character.
 	 */
 	public TagWME(String tag) {
 		this.tag = tag;
 	}
-	public String getTest() {
+	public String getTag() {
 		return this.tag;
+	}
+	public Boolean getBound() {
+		return this.bound;
+	}
+	public void Bind() {
+		bound = true;
 	}
 }

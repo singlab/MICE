@@ -12,34 +12,46 @@ public class Server {
 	Socket clientSocket;
 	
 	public void startServer(StoryRunner runner, Gson gson, int port) {
-		System.out.println(port);
-		try (ServerSocket serverSocket = new ServerSocket(port)) {
-			System.out.println("Server is listening on port " + port);
-			
-			this.clientSocket = serverSocket.accept();
-			InputStream input = this.clientSocket.getInputStream();
-			System.out.println("New client connected");
-
-			BufferedReader in = new BufferedReader(new InputStreamReader(input));
-			
-			byte[] buffer = new byte[1024];
-			int read = -1;
-			String output = "";
-//			while ((read = in.read(buffer)) != -1) {
-			while ((output = in.readLine()) != null) {
-				System.out.println(output);
-				// you have the agent through the runner, and the wme that way
-				// or update some kind of state that way, I don't know.
-				SendToABL(runner, output);
+		boolean shouldContinue= true;
+		while (shouldContinue) {
+			runner.getAgent().deleteAllWMEClass("TagWME"); //TODO PLEASE REMOVE
+			try (ServerSocket serverSocket = new ServerSocket(port)) {
+				System.out.println("Server is listening on port " + port);
+				
+				this.clientSocket = serverSocket.accept();
+				InputStream input = this.clientSocket.getInputStream();
+				System.out.println("New client connected");
+				
+				BufferedReader in = new BufferedReader(new InputStreamReader(input));
+				
+				byte[] buffer = new byte[1024];
+				int read = -1;
+				String output = "";
+				while ((output = in.readLine()) != null) {
+					System.out.println(output);
+					// you have the agent through the runner, and the wme that way
+					// or update some kind of state that way, I don't know.
+					if (output.equals("ShouldEnd")) {
+						CheckTree();
+					} else {
+						SendToABL(runner, output);						
+					}
+					if (output.equals("end")) {
+						shouldContinue = false;
+					}
+				}
+				System.out.println("Something was read.");
+			} catch (IOException ex) {
+				System.out.println("Server exception: " + ex.getMessage());
+				ex.printStackTrace();
 			}
-			System.out.println("Something was read.");
-		} catch (IOException ex) {
-			System.out.println("Server exception: " + ex.getMessage());
-			ex.printStackTrace();
-		}
-    		
+			
+		}		
     }
-	
+	private void CheckTree() {
+		
+		sendOutgoingMessage("0");
+	}
 	private void SendToABL(StoryRunner runner, String msg) {
 		TagWME wme = new TagWME(msg);
 		System.out.println(wme);

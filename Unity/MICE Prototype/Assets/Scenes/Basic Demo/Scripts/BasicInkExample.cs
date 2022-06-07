@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using System.Collections.Generic;
 using System;
 using Ink.Runtime;
@@ -8,8 +9,42 @@ using Ink.Runtime;
 public class BasicInkExample : MonoBehaviour {
     public static event Action<Story> OnCreateStory;
 	public GameObject server;
+	private string serverData = "";
+	private Boolean shouldEnd = false;
 
-
+//TODO: Basic loop
+// 		play game 
+// 		open threads
+//		create new flows through them
+		// when reaching epilogue, check to see if all flows are closed.
+		// if not. Close out flows.
+		// once all flows are closed, then end game.
+		// make sure all story beats can work without much contextual issues.
+	IEnumerator waiter(Choice choice) {
+		yield return new WaitForSecondsRealtime(1);
+		if (this.serverData != "") {	
+			Debug.Log("this is firing");
+			story.ChoosePathString("event_end");
+			serverData = "";
+		} else {
+			story.ChooseChoiceIndex (choice.index);
+		}
+		RefreshView();
+	}
+	public void HandleShouldEndData(string msg) {
+		if (msg == "0") {
+			shouldEnd = false;
+		} else {
+			shouldEnd = true;
+		}
+	}
+	public void HandleSceneData(string msg) {
+		Debug.Log(msg);
+		this.serverData = msg;
+	}
+	public void HandleVarData(string var, string msg) {
+		story.variablesState[var] = msg;
+	}
     void Awake () {
 		// Remove the default message
 		RemoveChildren();
@@ -19,7 +54,7 @@ public class BasicInkExample : MonoBehaviour {
 	// Creates a new Story object with the compiled story which we can then play!
 	void StartStory () {
 		story = new Story (inkJSONAsset.text);
-        if(OnCreateStory != null) OnCreateStory(story);
+        if(OnCreateStory != null) { OnCreateStory(story); }
 		RefreshView();
 	}
 	
@@ -27,19 +62,22 @@ public class BasicInkExample : MonoBehaviour {
 	// Destroys all the old content and choices.
 	// Continues over all the lines of text, then displays all the choices. If there are no choices, the story is finished!
 	void RefreshView () {
+		// check to see if we are in epilogue...
 		// Remove all the UI on screen
 		RemoveChildren ();
 		
+		// TODO: The most busted line of code in here. Honestly, this should
+		// be destroyed with a vindictive zeal only conjured up by the most
+		// dogmatic of individuals. 
+		// Basically makings sure the first string is fired within each story
+		// state so we can evaluate the state string.
+		story.Continue();
+		string state  = (string) story.variablesState["state"];
+		Debug.Log(state);
 		// Read all the content until we can't continue any more
 		while (story.canContinue) {
 			// Continue gets the next line of the story
-			string text = story.Continue ();
-			List<string> tags = story.currentTags;
-			if (tags.Count != 0) {
-				// This probs needs to be an event...
-				server.GetComponent<SocketClient>().SendServerMessage(tags);
-			}
-
+			string text = story.Continue();
 			// This removes any white space from the text.
 			text = text.Trim();
 			// Display the text on screen!
@@ -59,6 +97,7 @@ public class BasicInkExample : MonoBehaviour {
 		}
 		// If we've read all the content and there's no choices, the story is finished!
 		else {
+			server.GetComponent<SocketClient>().SendServerMessage("ShouldEnd");
 			Button choice = CreateChoiceView("End of story.\nRestart?");
 			choice.onClick.AddListener(delegate{
 				StartStory();
@@ -68,8 +107,14 @@ public class BasicInkExample : MonoBehaviour {
 
 	// When we click the choice button, tell the story to choose that choice!
 	void OnClickChoiceButton (Choice choice) {
-		story.ChooseChoiceIndex (choice.index);
-		RefreshView();
+		string state = (string) story.variablesState["state"];
+		Debug.Log("Sending message...");
+		server.GetComponent<SocketClient>().SendServerMessage(state);
+		StartCoroutine(waiter(choice));
+		// TODO: Figure out a way to only have one RefreshView function...
+		// That way we don't have to worry about multiple places this function
+		// fires.
+		// RefreshView();
 	}
 
 	// Creates a textbox showing the the line of text

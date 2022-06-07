@@ -54,18 +54,21 @@ public class StoryRunner {
     	// The server handles any kind of Unity and Javascript calls.g
     	//TODO: Get Unity and Java talking to each other, so you can have 
     	// event listeners on the player choice function.
+    	runner.setAgent(new AuthorAgent());
+    	new Thread(() -> runner.getAgent().startBehaving()).start();
+    	
     	runner.server = new Server();
     	new Thread(() -> runner.server.startServer(runner, gson, 5000)).start();
     	
-    	runner.setAgent(new AuthorAgent());
-    	new Thread(() -> runner.getAgent().startBehaving()).start();
     			
     	//TODO: Create an event listener that fires sendOutgoingMessage whenever
     	// 		something specific happens.
     	scan.close();
     	
     }
-    //TODO figure out how to input story nodes...
+    //TODO: figure out how to input story nodes...
+    //TODO: Figure out how to map behaviors to WMEs.
+    // Can a behavior save a WME in itself?
     public static String PrintPlayerOptions() {
     	String options = "";
     	String locationString = "Which location to go to?";
@@ -90,6 +93,9 @@ public class StoryRunner {
     }
     public String getLocationName() {
     	return player_location.getLocation();
+    }
+    public Server getServer() {
+    	return this.server;
     }
 }
 

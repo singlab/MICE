@@ -10,7 +10,9 @@ using System.Threading;
 // https://gist.github.com/danielbierwirth/0636650b005834204cb19ef5ae6ccedb
 // Should be replaced with a more robust message system.
 public class SocketClient : MonoBehaviour {  	
+	public GameObject SceneController;
 	#region private members 	
+	private BasicInkExample inkscript;
 	private TcpClient socketConnection; 	
 	private Thread clientReceiveThread;
     private int _PORT = 5000;
@@ -22,6 +24,7 @@ public class SocketClient : MonoBehaviour {
 	void Start () {
 		ConnectToTcpServer();     
         Debug.Log("The server has started");
+		inkscript = SceneController.GetComponent<BasicInkExample>();
 	}  	
 	/// <summary> 	
 	/// Setup socket connection. 	
@@ -49,11 +52,23 @@ public class SocketClient : MonoBehaviour {
 					int length; 					
 					// Read incomming stream into byte arrary. 					
 					while ((length = stream.Read(bytes, 0, bytes.Length)) != 0) { 						
-						var incommingData = new byte[length]; 						
-						Array.Copy(bytes, 0, incommingData, 0, length); 						
+						var incomingData = new byte[length]; 						
+						Array.Copy(bytes, 0, incomingData, 0, length); 						
 						// Convert byte array to string message. 						
-						string serverMessage = Encoding.ASCII.GetString(incommingData); 						
-						Debug.Log("server message received as: " + serverMessage); 					
+						string serverMessage = Encoding.ASCII.GetString(incomingData); 						
+						serverMessage = serverMessage.Trim();
+						if (serverMessage[0] == '0') {
+							Debug.Log("WE ARE FIRING OFF THE SCENE");
+							inkscript.HandleSceneData	(serverMessage.Substring(1));
+
+						} else if (serverMessage[0] == '1') {
+							inkscript.HandleShouldEndData(serverMessage.Substring(1));
+						} else {
+							inkscript.HandleVarData("text", serverMessage.Substring(1));
+						}
+						// inkscript.HandleSceneData(serverMessage);
+						Debug.Log("server message received as: " + serverMessage);
+						
 					} 				
 				} 			
 			}         
@@ -65,7 +80,7 @@ public class SocketClient : MonoBehaviour {
 
 
 
-    public void SendServerMessage(List<string> tags) {
+    public void SendServerMessage(string msg) {
         if (socketConnection == null) {             
             Debug.Log("Socket connect is null.");
 			return;
@@ -74,11 +89,7 @@ public class SocketClient : MonoBehaviour {
 			// Get a stream object for writing.
 			NetworkStream stream = socketConnection.GetStream(); 			
 			if (stream.CanWrite) {  
-
-				string clientMessage = "";
-                foreach(string tag in tags) {
-                    clientMessage += tag;
-                }
+				string clientMessage = msg;
                 clientMessage += "\n";
 				// Convert string message to byte array.                 
 				byte[] clientMessageAsByteArray = Encoding.ASCII.GetBytes(clientMessage); 				
