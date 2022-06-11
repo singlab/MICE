@@ -60,7 +60,6 @@ public class StoryRunner {
     	runner.server = new Server();
     	new Thread(() -> runner.server.startServer(runner, gson, 5000)).start();
     	
-    			
     	//TODO: Create an event listener that fires sendOutgoingMessage whenever
     	// 		something specific happens.
     	scan.close();
