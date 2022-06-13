@@ -50,6 +50,7 @@ public class Server {
 						heartbeatTimer = HEARTBEAT_DURATION; 
 					} else {
 						heartbeatTimer -= System.currentTimeMillis() - lastTimeStamp;
+						lastTimeStamp = System.currentTimeMillis();
 					}
 					if(heartbeatTimer <= 0) {
 						shouldContinue = false;
