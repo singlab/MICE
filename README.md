@@ -4,6 +4,21 @@
 
 This project focuses on creating showcase of how author techniques like MICE can lead to procedural consistency within an interactive narrative.
 
+
+## Abstract
+
+## Release Link
+
+AIIDE Demo: [the link])()
+
+## Instructions for Pre-Built Version
+
+1. Get the Unity-based executable (Dowload the correct release for your OS)  
+3. Get the java-based runnable jar.
+4. Run the thinkgs in the proper order.
+
+## Instructions to Build and Run from Source
+
 ### Prerequisites
 But to *actually* play the demo, please install [Eclipse](https://www.eclipse.org/) or any Java IDE. (We used Eclipse for this project because JetBeans alludes me.)
 
