@@ -11,8 +11,12 @@ import abl.wmes.*;
 public class Server {
 	Socket clientSocket;
 	
+	static final long HEARTBEAT_DURATION = 3000;
+	
 	public void startServer(StoryRunner runner, Gson gson, int port) {
 		boolean shouldContinue= true;
+		long heartbeatTimer = HEARTBEAT_DURATION;
+		long lastTimeStamp = System.currentTimeMillis();
 		while (shouldContinue) {
 			runner.getAgent().deleteAllWMEClass("TagWME"); //TODO PLEASE REMOVE
 			try (ServerSocket serverSocket = new ServerSocket(port)) {
@@ -39,6 +43,19 @@ public class Server {
 					if (output.equals("end")) {
 						shouldContinue = false;
 					}
+				
+					//manage heartbeat
+					if (output.equals("heartbeat")) {
+						//reset timer
+						heartbeatTimer = HEARTBEAT_DURATION; 
+					} else {
+						heartbeatTimer -= System.currentTimeMillis() - lastTimeStamp;
+					}
+					if(heartbeatTimer <= 0) {
+						shouldContinue = false;
+					}
+					
+					
 				}
 				System.out.println("Something was read.");
 			} catch (IOException ex) {
