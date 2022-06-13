@@ -9,7 +9,7 @@ This project focuses on creating showcase of how author techniques like MICE can
 
 ## Release Link
 
-AIIDE Demo: [the link])()
+AIIDE Demo: [the link]()
 
 ## Instructions for Pre-Built Version
 
