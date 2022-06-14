@@ -11,7 +11,7 @@ MICE in the Machine focuses on interactively generating narratives through a rea
 
 ## Release Link
 
-AIIDE Demo: [the link]()
+AIIDE Demo: https://github.com/singlab/MICE/releases/tag/Demo  
 
 ## Instructions for Pre-Built Version
 
