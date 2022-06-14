@@ -10,7 +10,6 @@ Unity/**/UserSettings/
 Unity/[Ll]ibrary/
 Unity/[Tt]emp/
 Unity/[Oo]bj/
-Unity/[Bb]uild/
 Unity/[Bb]uilds/
 Unity/[Ll]ogs/
 Unity/[Mm]emoryCaptures/
@@ -118,7 +117,6 @@ hs_err_pid*
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
-[Bb]uild/
 [Bb]uilds/
 [Ll]ogs/
 
@@ -186,3 +184,4 @@ Bin/
 Ink/
 
 # End of https://www.toptal.com/developers/gitignore/api/java
+
