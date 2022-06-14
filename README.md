@@ -34,18 +34,20 @@ AIIDE Demo: [the link]()
 
 `git clone git@github.com:singlab/MICE.git`
 
-2. In Eclipse, click on the File dropdown menu, and select import. From there, select the General folder and choose File System, as shown below. #TODO images
+2. In Eclipse, click on the File dropdown menu, and select import. From there, select the General folder and choose File System.
 
 
-2. Select the rool directory to be <user_path>\MICEABL\ABU-agent, where <user_path> is the user's relative directory. Select the ACU-agent project when it populates within the Projects textarea.
+3. Select the rool directory to be <user_path>\MICEABL\ABU-agent, where <user_path> is the user's relative directory. Select the ACU-agent project when it populates within the Projects textarea.
 
-3. Eclipse should open the project, and now navigate to the StoryRunner.java file, which is in ACU-agent>src>Runner 
+4. Eclipse should open the project, and now navigate to the StoryRunner.java file, which is in ACU-agent>src>Runner 
 
-4. Run the StoryRunner.java file through Eclipse. Debug statements should appear within the console. The server should now be running.
+5. Run the StoryRunner.java file through Eclipse. Debug statements should appear within the console. The server should now be running.
 
-5. Now, you can choose either to download Unity and open the MICE Unity project, or simple use the pre-built demo within Unity\Build.
+6. Now, you can choose either to download Unity and open the MICE Unity project, or simple use the pre-built demo within Unity\Build.
 
 
 ### Known Bugs
 Occasionally, ink text will not appear on certain scenes, such as the scene right after procedurally switching story points with ABL. 
 
+### Video Explanation.
+Here is an run through and explanation of the demo in video form. https://youtu.be/VnR7eesR_qI
