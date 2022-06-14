@@ -13,6 +13,8 @@ MICE in the Machine focuses on interactively generating narratives through a rea
 
 AIIDE Demo: https://github.com/singlab/MICE/releases/tag/Demo  
 
+Here is an run through and explanation of the demo in video form. https://youtu.be/VnR7eesR_qI  
+
 ## Instructions for Pre-Built Version
 
 1. Please install the latest version of the [Java JDK](https://www.oracle.com/java/technologies/downloads/) from Orcale. (This will be needed to run the jar file for this demo.)
@@ -49,5 +51,4 @@ AIIDE Demo: https://github.com/singlab/MICE/releases/tag/Demo
 ### Known Bugs
 Occasionally, ink text will not appear on certain scenes, such as the scene right after procedurally switching story points with ABL. 
 
-### Video Explanation.
-Here is an run through and explanation of the demo in video form. https://youtu.be/VnR7eesR_qI
+
