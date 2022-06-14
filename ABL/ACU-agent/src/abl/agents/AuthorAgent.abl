@@ -60,7 +60,7 @@ behaving_entity AuthorAgent {
 	    mental_act { 
 	    	System.out.println("Starting event wait.");
 	    }
-	    with (success_test {(TagWME tag == "EventStart") }) wait;
+	    with (success_test {(TagWME tag == "begin") }) wait;
 	    subgoal BeginEvent();
 	}
 	sequential behavior BeginEvent() {

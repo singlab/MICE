@@ -45,7 +45,11 @@ He shrugs his shoulders. "But they control the land."
 ~ state = "EventStart"
 # Event Start
 Something happens that disrupts the flow of the narrative.
--> event_end
+-> something_else
+
+=== something_else
+This is just something extra.
+-> Epilogue
 
 === event_end
 ~ state = "EventEnd"

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,8 +10,11 @@ using Ink.Runtime;
 public class BasicInkExample : MonoBehaviour {
     public static event Action<Story> OnCreateStory;
 	public GameObject server;
-	private string serverData = "";
+	private static string serverData = "";
 	private Boolean shouldEnd = false;
+	private const float DURATION = 2f;
+	private float timeRemaining = DURATION;
+
 
 //TODO: Basic loop
 // 		play game 
@@ -22,7 +26,7 @@ public class BasicInkExample : MonoBehaviour {
 		// make sure all story beats can work without much contextual issues.
 	IEnumerator waiter(Choice choice) {
 		yield return new WaitForSecondsRealtime(1);
-		if (this.serverData != "") {	
+		if (serverData != "") {	
 			Debug.Log("this is firing");
 			story.ChoosePathString("event_end");
 			serverData = "";
@@ -30,6 +34,11 @@ public class BasicInkExample : MonoBehaviour {
 			story.ChooseChoiceIndex (choice.index);
 		}
 		RefreshView();
+	}
+
+	async void OnApplicationQuit() {
+		await server.GetComponent<SocketClient>().SendServerMessage("END");
+		
 	}
 	public void HandleShouldEndData(string msg) {
 		if (msg == "0") {
@@ -40,11 +49,12 @@ public class BasicInkExample : MonoBehaviour {
 	}
 	public void HandleSceneData(string msg) {
 		Debug.Log(msg);
-		this.serverData = msg;
+		serverData = msg;
 	}
 	public void HandleVarData(string var, string msg) {
 		story.variablesState[var] = msg;
 	}
+	
     void Awake () {
 		// Remove the default message
 		RemoveChildren();
@@ -72,8 +82,6 @@ public class BasicInkExample : MonoBehaviour {
 		// Basically makings sure the first string is fired within each story
 		// state so we can evaluate the state string.
 		story.Continue();
-		string state  = (string) story.variablesState["state"];
-		Debug.Log(state);
 		// Read all the content until we can't continue any more
 		while (story.canContinue) {
 			// Continue gets the next line of the story
@@ -97,7 +105,6 @@ public class BasicInkExample : MonoBehaviour {
 		}
 		// If we've read all the content and there's no choices, the story is finished!
 		else {
-			server.GetComponent<SocketClient>().SendServerMessage("ShouldEnd");
 			Button choice = CreateChoiceView("End of story.\nRestart?");
 			choice.onClick.AddListener(delegate{
 				StartStory();
@@ -105,16 +112,34 @@ public class BasicInkExample : MonoBehaviour {
 		}
 	}
 
-	// When we click the choice button, tell the story to choose that choice!
-	void OnClickChoiceButton (Choice choice) {
+	// // When we click the choice button, tell the story to choose that choice!
+	// void OnClickChoiceButton (Choice choice) {
+	// 	string state = (string) story.variablesState["state"];
+	// 	Debug.Log("Sending message...");
+	// 	server.GetComponent<SocketClient>().SendServerMessage(state);
+	// 	StartCoroutine(waiter(choice));
+	// 	// TODO: Figure out a way to only have one RefreshView function...
+	// 	// That way we don't have to worry about multiple places this function
+	// 	// fires.
+	// 	// RefreshView();
+	// }
+
+	async void OnClickChoiceButton (Choice choice) {
 		string state = (string) story.variablesState["state"];
-		Debug.Log("Sending message...");
-		server.GetComponent<SocketClient>().SendServerMessage(state);
-		StartCoroutine(waiter(choice));
+		Debug.Log("Sending state..." + state);
+		serverData = await server.GetComponent<SocketClient>().SendServerMessage(state);
+		Debug.Log("OnClickCHoiceButton serverData is: " + serverData);
+		if (serverData != "") {	
+			Debug.Log("STORY DATA IS CHANGING THANKS TO ABL.");
+			story.ChoosePathString("event_end");
+			serverData = "";
+		} else {
+			story.ChooseChoiceIndex (choice.index);
+		}
 		// TODO: Figure out a way to only have one RefreshView function...
 		// That way we don't have to worry about multiple places this function
 		// fires.
-		// RefreshView();
+		RefreshView();
 	}
 
 	// Creates a textbox showing the the line of text

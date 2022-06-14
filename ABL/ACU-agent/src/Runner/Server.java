@@ -11,7 +11,7 @@ import abl.wmes.*;
 public class Server {
 	Socket clientSocket;
 	
-	static final long HEARTBEAT_DURATION = 3000;
+	static final long HEARTBEAT_DURATION = 50;
 	
 	public void startServer(StoryRunner runner, Gson gson, int port) {
 		boolean shouldContinue= true;
@@ -28,35 +28,19 @@ public class Server {
 				
 				BufferedReader in = new BufferedReader(new InputStreamReader(input));
 				
-				byte[] buffer = new byte[1024];
-				int read = -1;
 				String output = "";
 				while ((output = in.readLine()) != null) {
 					System.out.println(output);
 					// you have the agent through the runner, and the wme that way
 					// or update some kind of state that way, I don't know.
-					if (output.equals("ShouldEnd")) {
-						CheckTree();
+					//manage heartbeat
+					if (output.equals("END")) {
+						shouldContinue = false;
+						System.out.println("Server should end.");
+						//reset timer
 					} else {
 						SendToABL(runner, output);						
 					}
-					if (output.equals("end")) {
-						shouldContinue = false;
-					}
-				
-					//manage heartbeat
-					if (output.equals("heartbeat")) {
-						//reset timer
-						heartbeatTimer = HEARTBEAT_DURATION; 
-					} else {
-						heartbeatTimer -= System.currentTimeMillis() - lastTimeStamp;
-						lastTimeStamp = System.currentTimeMillis();
-					}
-					if(heartbeatTimer <= 0) {
-						shouldContinue = false;
-					}
-					
-					
 				}
 				System.out.println("Something was read.");
 			} catch (IOException ex) {
@@ -67,7 +51,6 @@ public class Server {
 		}		
     }
 	private void CheckTree() {
-		
 		sendOutgoingMessage("0");
 	}
 	private void SendToABL(StoryRunner runner, String msg) {
